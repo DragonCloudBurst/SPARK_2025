@@ -9,6 +9,8 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 
+score = 0
+
 pygame.init()
 pygame.mixer.init()
 
@@ -46,6 +48,31 @@ class Opp():
 
     def update(self):
         screen.blit(self.image, self.rect)
+        
+
+
+'''
+Class for collectable pills
+'''
+class Pills():
+    def __init__(self, x, y, rect):
+        self.x = x
+        self.y = y
+        self.image = pygame.image.load('images/pills/pill_1pt.png')
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
+
+    def update(self):
+        if player_rect.colliderect(self.rect):
+            score += 1
+            screen.fill(WHITE)
+            pygame.display.flip()
+
+
+
 
 '''
 Class for players
@@ -118,7 +145,7 @@ def gameLoop():
     enemy = Opp(100, 100, enemy_rect)
     pygame.mixer.music.play(-1)
 
-    cell_size = 15
+    cell_size = 16
     walls = []
 
     #Added extra walls for a clean look
@@ -144,9 +171,10 @@ def gameLoop():
             player.moving = False
             pygame.mixer.music.stop()
             death_sound.play()
-            pygame.time.wait(3000)
+            pygame.time.wait(2000)
             is_running = False
             print("Aww Man")
+            print(f"Score: {score}")
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
