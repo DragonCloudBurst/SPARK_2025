@@ -148,7 +148,7 @@ def gameLoop():
     clock = pygame.time.Clock()
     clock.tick(FPS)
 
-    player = Player(300, 200, player_rect)
+    player = Player(550, 30, player_rect)
     enemy = Opp(100, 100, enemy_rect)
     pygame.mixer.music.play(-1)
 
