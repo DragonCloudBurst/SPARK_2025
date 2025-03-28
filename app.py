@@ -6,6 +6,7 @@ SCREEN_HEIGHT = 400
 FPS = 30
 
 WHITE = (255, 255, 255)
+DARK_GREY = (10, 10, 10)
 
 score = 0
 
@@ -58,14 +59,12 @@ class Opp():
 
     def update(self):
         screen.blit(self.image, self.rect)
-        
-
 
 '''
 Class for collectable pills
 '''
-class Pills():
-    def __init__(self, x, y, rect):
+class Pill():
+    def __init__(self, x, y):
         self.x = x
         self.y = y
         self.image = pygame.image.load('images/pills/pill_1pt.png')
@@ -78,11 +77,8 @@ class Pills():
     def update(self):
         if player_rect.colliderect(self.rect):
             score += 1
-            screen.fill(WHITE)
+            screen.fill(DARK_GREY)
             pygame.display.flip()
-
-
-
 
 '''
 Class for players
@@ -157,6 +153,7 @@ def gameLoop():
 
     cell_size = 16
     walls = []
+    pills = [Pill(90, 90)]
 
     for row_index, row in enumerate(map.map_tiles):
         for col_index, tile in enumerate(row):
@@ -165,8 +162,11 @@ def gameLoop():
                 wall = Wall(col_index * cell_size, row_index * cell_size, image)
                 walls.append(wall)
 
+    for pill in pills:
+        screen.blit(screen, pill.rect)
+
     while is_running:
-        screen.fill(WHITE)
+        screen.fill(DARK_GREY)
         clock.tick(FPS)
 
         if player.rect.colliderect(enemy.rect):
