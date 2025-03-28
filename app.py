@@ -1,8 +1,6 @@
 import pygame
 import map
 
-# referencing preexisting code from my team in class: https://github.com/DragonCloudBurst/Team-3-SENG-1005-Project/blob/main/main.py
-
 SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 400
 FPS = 30
@@ -17,12 +15,14 @@ pygame.mixer.init()
 death_sound = pygame.mixer.Sound('music/SparkFlatline.mp3')
 pygame.mixer.music.load('music/Spark25.mp3')
 
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.HWSURFACE | pygame.DOUBLEBUF)
 
 player_rect = pygame.Rect(30, 30, 30, 30)
 enemy_rect = pygame.Rect(40, 40, 40, 40)
 
+'''
+Class for Walls
+'''
 class Wall():
     def __init__(self, x, y, width, height):
         self.rect = pygame.Rect(x, y, width, height)
@@ -31,7 +31,7 @@ class Wall():
         pygame.draw.rect(screen, BLACK, self.rect)
 
 '''
-This is the class for an enemy in the game
+Class for enemies
 '''
 class Opp():
     def __init__(self, x, y, rect):
@@ -47,14 +47,8 @@ class Opp():
     def update(self):
         screen.blit(self.image, self.rect)
 
-top_wall = Wall(0, 0, SCREEN_WIDTH, 10)
-left_wall = Wall(0, 0, 10, SCREEN_HEIGHT)
-bottom_wall = Wall(0, SCREEN_HEIGHT - 10, SCREEN_WIDTH, 10)
-right_wall = Wall(SCREEN_WIDTH - 10, 0, 10, SCREEN_HEIGHT)
-walls = [top_wall, bottom_wall, left_wall, right_wall]
-
 '''
-This is a player class
+Class for players
 '''
 class Player():
     def __init__(self, x, y, rect):
@@ -70,7 +64,7 @@ class Player():
         self.dx = 0
         self.dy = 0
 
-    def update(self):
+    def update(self, walls):
         if self.moving:
             self.dx = 0
             self.dy = 0
@@ -114,7 +108,6 @@ class Player():
             self.rect.y += self.dy
 
             screen.blit(self.image, self.rect)
-            pygame.display.flip()
 
 def gameLoop():
     is_running = True
@@ -124,6 +117,24 @@ def gameLoop():
     player = Player(300, 200, player_rect)
     enemy = Opp(100, 100, enemy_rect)
     pygame.mixer.music.play(-1)
+
+    cell_size = 15
+    walls = []
+
+    #Added extra walls for a clean look
+    walls.extend([
+        Wall(0, 0, SCREEN_WIDTH, 10),
+        Wall(0, SCREEN_HEIGHT - 10, SCREEN_WIDTH, 10),
+        Wall(0, 0, 10, SCREEN_HEIGHT),
+        Wall(SCREEN_WIDTH - 10, 0, 10, SCREEN_HEIGHT)
+    ])
+    
+    #References the map.py file from the import
+    for row_index, row in enumerate(map.map_tiles):
+        for col_index, tile in enumerate(row):
+            if tile != -1 and tile != 0:
+                wall = Wall(col_index * cell_size, row_index * cell_size, cell_size, cell_size)
+                walls.append(wall)
 
     while is_running:
         screen.fill(WHITE)
@@ -143,7 +154,7 @@ def gameLoop():
                 print("done")
                 break
 
-        player.update()
+        player.update(walls)
         enemy.update()
         for wall in walls:
             wall.update()
