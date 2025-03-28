@@ -52,7 +52,7 @@ class Opp():
     def __init__(self, x, y, rect, image, player):
         self.x = x
         self.y = y
-        self.image = pygame.image.load('images/germs/germ_1.png')
+        self.image = image
         self.rect = self.image.get_rect()
         self.player = player
         self.rect.x = x
