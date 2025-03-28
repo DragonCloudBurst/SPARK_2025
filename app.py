@@ -6,7 +6,7 @@ SCREEN_HEIGHT = 400
 FPS = 30
 
 WHITE = (255, 255, 255)
-DARK_GREY = (10, 10, 10)
+DARK_GREY = (30, 30, 30)
 
 score = 0
 
@@ -28,6 +28,7 @@ wall_images = {
     9: pygame.image.load("images/walls/wall_corner_topright.png"),
     10: pygame.image.load("images/walls/wall_hori.png"),
     11: pygame.image.load("images/walls/wall_vert.png"),
+    12: pygame.image.load("images/walls/patient_room.png")
 }
 
 '''
