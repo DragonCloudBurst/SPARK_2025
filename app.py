@@ -63,18 +63,46 @@ class Opp():
         self.dy = 0
 
     # referenced from here: https://stackoverflow.com/questions/20044791/how-to-make-an-enemy-follow-the-player-in-pygame
-    def move_towards_player(self, player):
-        dirvect = pygame.math.Vector2(player.rect.x - self.rect.x,
-                                      player.rect.y - self.rect.y)
-        dirvect.normalize()
-        dirvect.scale_to_length(5)
-        self.rect.x += self.dx * 5
-        self.rect.y += self.dy * 5
+    def move_towards_player(self, player, walls):
+        dirvect = pygame.math.Vector2(player.rect.centerx - self.rect.centerx,
+                                      player.rect.centery - self.rect.centery)
+        if dirvect.length() > 0:
+            dirvect.normalize()
+            dirvect.scale_to_length(2)
 
+            line = (self.rect.centerx, self.rect.centery,
+                    player.rect.centerx, player.rect.centery)
+            wall_in_sight = False
+            for wall in walls:
+                if wall.rect.clipline(line):
+                    wall_in_sight = True
+                    break
 
-    def update(self):
+            # Collision Detection and Movement
+            if not wall_in_sight:
+                self.dx = dirvect.x
+                self.dy = dirvect.y
+
+                new_rect = self.rect.copy()
+                new_rect.x += self.dx
+                new_rect.y += self.dy
+
+                collision = False
+                for wall in walls:
+                    if new_rect.colliderect(wall.rect):
+                        collision = True
+                        break
+
+                if not collision:
+                    self.rect.x += self.dx
+                    self.rect.y += self.dy
+            else:
+                # If a wall is in sight, enemy does not move.
+                pass
+
+    def update(self, player, walls):
         screen.blit(self.image, self.rect)
-        self.move_towards_player(self.player)
+        self.move_towards_player(player, walls)
 
 '''
 Class for collectable pills
@@ -206,8 +234,8 @@ def gameLoop():
 
         player.update(walls)
         for enemy in enemies:
-            enemy.update()
-            #enemy wall collision detection.
+            enemy.update(player, walls)
+            #enemy wall collision detection.      
             new_enemy_rect = enemy.rect.copy()
             new_enemy_rect.x += enemy.dx
             new_enemy_rect.y += enemy.dy
@@ -220,7 +248,7 @@ def gameLoop():
                     enemy_collision = True
                     enemy_collision_wall = wall
                     break
-            if enemy_collision:
+            if enemy_collision and enemy_collision_wall: # added enemy_collision_wall check here
                 enemy.rect.x -= enemy.dx
                 enemy.rect.y -= enemy.dy
 
