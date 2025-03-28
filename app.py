@@ -69,7 +69,8 @@ class Opp():
         if dirvect.length() > 0:
             dirvect.normalize()
             dirvect.scale_to_length(2)
-
+    
+            #Aided Heavily from the Google AI feature
             line = (self.rect.centerx, self.rect.centery,
                     player.rect.centerx, player.rect.centery)
             wall_in_sight = False
@@ -97,7 +98,6 @@ class Opp():
                     self.rect.x += self.dx
                     self.rect.y += self.dy
             else:
-                # If a wall is in sight, enemy does not move.
                 pass
 
     def update(self, player, walls):
@@ -195,7 +195,7 @@ def gameLoop():
 
     player = Player(550, 30, player_rect)
     enemies = [
-        Opp(100, 120, enemy_rect, pygame.image.load('images/germs/germ_1.png'), player),
+        Opp(200, 120, enemy_rect, pygame.image.load('images/germs/germ_1.png'), player),
         Opp(400, 150, enemy_rect, pygame.image.load('images/germs/germ_2.png'), player),
         Opp(25, 300, enemy_rect, pygame.image.load('images/germs/germ_3.png'), player)
     ]
@@ -248,7 +248,7 @@ def gameLoop():
                     enemy_collision = True
                     enemy_collision_wall = wall
                     break
-            if enemy_collision and enemy_collision_wall: # added enemy_collision_wall check here
+            if enemy_collision and enemy_collision_wall: 
                 enemy.rect.x -= enemy.dx
                 enemy.rect.y -= enemy.dy
 
