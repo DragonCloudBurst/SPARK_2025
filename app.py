@@ -72,7 +72,7 @@ class Opp():
     
             #Aided Heavily from the Google AI feature
             line = (self.rect.centerx, self.rect.centery,
-                    player.rect.centerx, player.rect.centery)
+                player.rect.centerx, player.rect.centery)
             wall_in_sight = False
             for wall in walls:
                 if wall.rect.clipline(line):
@@ -90,7 +90,7 @@ class Opp():
 
                 collision = False
                 for wall in walls:
-                    if new_rect.colliderect(wall.rect):
+                    if new_rect.rect.colliderect(wall.rect):
                         collision = True
                         break
 
@@ -195,11 +195,15 @@ def gameLoop():
 
     player = Player(550, 30, player_rect)
     enemies = [
-        Opp(200, 120, enemy_rect, pygame.image.load('images/germs/germ_1.png'), player),
-        Opp(400, 150, enemy_rect, pygame.image.load('images/germs/germ_2.png'), player),
-        Opp(25, 300, enemy_rect, pygame.image.load('images/germs/germ_3.png'), player)
+        Opp(110, 120, enemy_rect, pygame.image.load('images/germs/germ_1.png'), player),
+        Opp(410, 150, enemy_rect, pygame.image.load('images/germs/germ_2.png'), player),
+        Opp(40, 300, enemy_rect, pygame.image.load('images/germs/germ_3.png'), player)
     ]
-    perc = Pill(450, 70)
+    # perc = [Pill(300, 40), Pill(430, 70), Pill(400, 185), Pill(200, 35), Pill(200, 150), Pill(200, 200),
+    #         Pill(50, 300), Pill(25, 250)]
+    perc = [Pill(25, 250), Pill(20, 300), Pill(200, 200), Pill(200, 150), Pill(200, 35), Pill(400, 185),
+            Pill(430, 70), Pill(310, 40), Pill(500, 20), Pill(500, 180)]
+    pill_counter = -1
     pygame.mixer.music.play(-1)
 
     cell_size = 16
@@ -252,11 +256,13 @@ def gameLoop():
                 enemy.rect.x -= enemy.dx
                 enemy.rect.y -= enemy.dy
 
-        perc.draw()
+        for pill in perc:
+            perc[pill_counter].draw()
 
-        if player.rect.colliderect(perc.rect) and not perc.collected:
-            perc.collect()
+        if player.rect.colliderect(perc[pill_counter].rect) and not perc[pill_counter].collected:
+            perc[pill_counter].collect()
             score += 1
+            pill_counter += 1
             print("+1")
 
         for wall in walls:
