@@ -1,4 +1,5 @@
 import pygame
+import map
 
 # referencing preexisting code from my team in class: https://github.com/DragonCloudBurst/Team-3-SENG-1005-Project/blob/main/main.py
 
