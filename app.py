@@ -13,7 +13,9 @@ RED = (255, 0, 0)
 pygame.init()
 pygame.mixer.init()
 
+death_sound = pygame.mixer.Sound('music/SparkFlatline.mp3')
 pygame.mixer.music.load('music/Spark25.mp3')
+
 
 
 while pygame.mixer.music.get_busy():
@@ -100,6 +102,9 @@ def gameLoop():
 
         if player.rect.colliderect(enemy.rect) :
             player.moving = False
+            pygame.mixer.music.stop() 
+            death_sound.play()
+            pygame.time.wait(1500)
             is_running = False
             print("Aww Man")
 
@@ -110,6 +115,7 @@ def gameLoop():
             
             if event.type == pygame.QUIT:
                 is_running = False
+
                 print("done")
                 break
 
