@@ -76,9 +76,6 @@ class Opp():
         screen.blit(self.image, self.rect)
         self.move_towards_player(self.player)
 
-        
-        
-
 '''
 Class for collectable pills
 '''
@@ -169,10 +166,12 @@ def gameLoop():
     clock.tick(FPS)
 
     player = Player(550, 30, player_rect)
-    enemy1 = Opp(100, 120, enemy_rect, pygame.image.load('images/germs/germ_1.png'))
-    enemy2 = Opp(400, 150, enemy_rect, pygame.image.load('images/germs/germ_2.png'))
-    enemy3 = Opp(25, 300, enemy_rect, pygame.image.load('images/germs/germ_3.png'))
-    perc = Pills(100, 100, perc_rect)
+    enemies = [
+        Opp(100, 120, enemy_rect, pygame.image.load('images/germs/germ_1.png'), player),
+        Opp(400, 150, enemy_rect, pygame.image.load('images/germs/germ_2.png'), player),
+        Opp(25, 300, enemy_rect, pygame.image.load('images/germs/germ_3.png'), player)
+    ]
+    perc = Pill(450, 70)
     pygame.mixer.music.play(-1)
 
     cell_size = 16
@@ -189,14 +188,15 @@ def gameLoop():
         screen.fill(DARK_GREY)
         clock.tick(FPS)
 
-        if player.rect.colliderect(enemy.rect):
-            player.moving = False
-            pygame.mixer.music.stop()
-            death_sound.play()
-            pygame.time.wait(2000)
-            is_running = False
-            print("Aww Man")
-            print(f"Final Score: {score}")
+        for enemy in enemies:
+            if player.rect.colliderect(enemy.rect):
+                player.moving = False
+                pygame.mixer.music.stop()
+                death_sound.play()
+                pygame.time.wait(2000)
+                is_running = False
+                print("Aww Man")
+                print(f"Final Score: {score}")
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -205,14 +205,32 @@ def gameLoop():
                 break
 
         player.update(walls)
-        enemy.update()
+        for enemy in enemies:
+            enemy.update()
+            #enemy wall collision detection.
+            new_enemy_rect = enemy.rect.copy()
+            new_enemy_rect.x += enemy.dx
+            new_enemy_rect.y += enemy.dy
+
+            enemy_collision = False
+            enemy_collision_wall = None
+
+            for wall in walls:
+                if new_enemy_rect.colliderect(wall.rect):
+                    enemy_collision = True
+                    enemy_collision_wall = wall
+                    break
+            if enemy_collision:
+                enemy.rect.x -= enemy.dx
+                enemy.rect.y -= enemy.dy
+
         perc.draw()
 
         if player.rect.colliderect(perc.rect) and not perc.collected:
             perc.collect()
             score += 1
             print("+1")
-                
+
         for wall in walls:
             wall.update()
 
