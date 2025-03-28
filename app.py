@@ -7,6 +7,7 @@ FPS = 30
 
 WHITE = (255, 255, 255)
 
+
 pygame.init()
 pygame.mixer.init()
 
@@ -17,6 +18,7 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.HWSURFACE
 
 player_rect = pygame.Rect(30, 30, 30, 30)
 enemy_rect = pygame.Rect(40, 40, 40, 40)
+perc_rect = pygame.Rect(30, 30, 30, 30)
 
 wall_images = {
     6: pygame.image.load("images/walls/wall_corner_bottomleft.png"),
@@ -119,6 +121,21 @@ class Player():
 
             screen.blit(self.image, self.rect)
 
+class Pills():
+    def __init__(self, x, y, rect):
+        self.x = x
+        self.y = y
+        self.image = pygame.image.load('images/pills/pill_1pt.png')
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
+
+    def update(self):
+        screen.blit(self.image, self.rect)
+
+
 def gameLoop():
     is_running = True
     clock = pygame.time.Clock()
@@ -126,6 +143,7 @@ def gameLoop():
 
     player = Player(300, 200, player_rect)
     enemy = Opp(100, 100, enemy_rect)
+    perc = Pills(100, 100, perc_rect)
     pygame.mixer.music.play(-1)
 
     cell_size = 16
