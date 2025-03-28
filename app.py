@@ -50,10 +50,10 @@ class Wall():
 Class for enemies
 '''
 class Opp():
-    def __init__(self, x, y, rect):
+    def __init__(self, x, y, rect, image):
         self.x = x
         self.y = y
-        self.image = pygame.image.load('images/germs/germ_1.png')
+        self.image = image
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
@@ -166,7 +166,9 @@ def gameLoop():
     clock.tick(FPS)
 
     player = Player(550, 30, player_rect)
-    enemy = Opp(100, 100, enemy_rect)
+    enemy1 = Opp(100, 120, enemy_rect, pygame.image.load('images/germs/germ_1.png'))
+    enemy2 = Opp(400, 150, enemy_rect, pygame.image.load('images/germs/germ_2.png'))
+    enemy3 = Opp(25, 300, enemy_rect, pygame.image.load('images/germs/germ_3.png'))
     perc = Pills(100, 100, perc_rect)
     pygame.mixer.music.play(-1)
 
@@ -188,7 +190,7 @@ def gameLoop():
         screen.fill(DARK_GREY)
         clock.tick(FPS)
 
-        if player.rect.colliderect(enemy.rect):
+        if player.rect.colliderect(enemy1.rect) or player.rect.colliderect(enemy2.rect) or player.rect.colliderect(enemy3.rect):
             player.moving = False
             pygame.mixer.music.stop()
             death_sound.play()
@@ -204,7 +206,9 @@ def gameLoop():
                 break
 
         player.update(walls)
-        enemy.update()
+        enemy1.update()
+        enemy2.update()
+        enemy3.update()
         for wall in walls:
             wall.update()
         pygame.display.flip()
