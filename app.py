@@ -10,7 +10,6 @@ DARK_GREY = (30, 30, 30)
 
 score = 0
 
-
 pygame.init()
 pygame.mixer.init()
 
@@ -53,7 +52,7 @@ class Opp():
     def __init__(self, x, y, rect, image, player):
         self.x = x
         self.y = y
-        self.image = image
+        self.image = pygame.image.load('images/germs/germ_1.png')
         self.rect = self.image.get_rect()
         self.player = player
         self.rect.x = x
@@ -93,12 +92,13 @@ class Pill():
         self.rect.y = y
         self.width = self.image.get_width()
         self.height = self.image.get_height()
+        self.collected = False
 
-    def update(self):
-        if player_rect.colliderect(self.rect):
-            score += 1
-            screen.fill(DARK_GREY)
-            pygame.display.flip()
+    def draw(self):
+        if not self.collected:
+            screen.blit(self.image, self.rect)
+    def collect(self):
+        self.collected = True
 
 '''
 Class for players
@@ -162,36 +162,21 @@ class Player():
 
             screen.blit(self.image, self.rect)
 
-class Pills():
-    def __init__(self, x, y, rect):
-        self.x = x
-        self.y = y
-        self.image = pygame.image.load('images/pills/pill_1pt.png')
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
-        self.width = self.image.get_width()
-        self.height = self.image.get_height()
-
-    def update(self):
-        screen.blit(self.image, self.rect)
-
-
 def gameLoop():
+    global score
     is_running = True
     clock = pygame.time.Clock()
     clock.tick(FPS)
 
     player = Player(550, 30, player_rect)
-    enemy1 = Opp(100, 120, enemy_rect, pygame.image.load('images/germs/germ_1.png'), player)
-    enemy2 = Opp(400, 150, enemy_rect, pygame.image.load('images/germs/germ_2.png'), player)
-    enemy3 = Opp(25, 300, enemy_rect, pygame.image.load('images/germs/germ_3.png'), player)
+    enemy1 = Opp(100, 120, enemy_rect, pygame.image.load('images/germs/germ_1.png'))
+    enemy2 = Opp(400, 150, enemy_rect, pygame.image.load('images/germs/germ_2.png'))
+    enemy3 = Opp(25, 300, enemy_rect, pygame.image.load('images/germs/germ_3.png'))
     perc = Pills(100, 100, perc_rect)
     pygame.mixer.music.play(-1)
 
     cell_size = 16
     walls = []
-    pills = [Pill(90, 90)]
 
     for row_index, row in enumerate(map.map_tiles):
         for col_index, tile in enumerate(row):
@@ -200,21 +185,18 @@ def gameLoop():
                 wall = Wall(col_index * cell_size, row_index * cell_size, image)
                 walls.append(wall)
 
-    for pill in pills:
-        screen.blit(screen, pill.rect)
-
     while is_running:
         screen.fill(DARK_GREY)
         clock.tick(FPS)
 
-        if player.rect.colliderect(enemy1.rect) or player.rect.colliderect(enemy2.rect) or player.rect.colliderect(enemy3.rect):
+        if player.rect.colliderect(enemy.rect):
             player.moving = False
             pygame.mixer.music.stop()
             death_sound.play()
             pygame.time.wait(2000)
             is_running = False
             print("Aww Man")
-            print(f"Score: {score}")
+            print(f"Final Score: {score}")
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -223,11 +205,17 @@ def gameLoop():
                 break
 
         player.update(walls)
-        enemy1.update()
-        enemy2.update()
-        enemy3.update()
+        enemy.update()
+        perc.draw()
+
+        if player.rect.colliderect(perc.rect) and not perc.collected:
+            perc.collect()
+            score += 1
+            print("+1")
+                
         for wall in walls:
             wall.update()
+
         pygame.display.flip()
 
 gameLoop()
