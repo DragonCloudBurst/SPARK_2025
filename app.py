@@ -1,5 +1,7 @@
 import pygame
 
+# referencing preexisting code from my team in class: https://github.com/DragonCloudBurst/Team-3-SENG-1005-Project/blob/main/main.py
+
 SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 400
 FPS = 30
@@ -30,7 +32,6 @@ class Player():
     def update(self):
         dx = 0
         dy = 0
-        
         
         key = pygame.key.get_pressed()
         if key[pygame.K_LEFT]:
@@ -70,7 +71,5 @@ def gameLoop():
                 is_running = False
                 print("done")
                 break
-
-        # pygame.display.flip()
 
 gameLoop()
