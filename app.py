@@ -13,6 +13,12 @@ RED = (255, 0, 0)
 pygame.init()
 pygame.mixer.init()
 
+pygame.mixer.music.load('music/Spark25.mp3')
+
+
+while pygame.mixer.music.get_busy():
+    pygame.time.Clock().tick(10)
+
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Spark 2025")
 
@@ -83,16 +89,19 @@ def gameLoop():
 
     player = Player(300, 200, player_rect) 
     enemy = Opp(100, 100, enemy_rect)
-
+    pygame.mixer.music.play(-1)
 
 
     while is_running:
 
         screen.fill(WHITE)
         clock.tick(FPS)
-        
+
+
         if player.rect.colliderect(enemy.rect) :
             player.moving = False
+            is_running = False
+            print("Aww Man")
 
         for event in pygame.event.get():
 
