@@ -6,8 +6,6 @@ SCREEN_HEIGHT = 400
 FPS = 30
 
 WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-RED = (255, 0, 0)
 
 pygame.init()
 pygame.mixer.init()
@@ -20,15 +18,27 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.HWSURFACE
 player_rect = pygame.Rect(30, 30, 30, 30)
 enemy_rect = pygame.Rect(40, 40, 40, 40)
 
+wall_images = {
+    6: pygame.image.load("images/walls/wall_corner_bottomleft.png"),
+    7: pygame.image.load("images/walls/wall_corner_bottomright.png"),
+    8: pygame.image.load("images/walls/wall_corner_topleft.png"),
+    9: pygame.image.load("images/walls/wall_corner_topright.png"),
+    10: pygame.image.load("images/walls/wall_hori.png"),
+    11: pygame.image.load("images/walls/wall_vert.png"),
+}
+
 '''
 Class for Walls
 '''
 class Wall():
-    def __init__(self, x, y, width, height):
-        self.rect = pygame.Rect(x, y, width, height)
+    def __init__(self, x, y, image):
+        self.image = image
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
 
     def update(self):
-        pygame.draw.rect(screen, BLACK, self.rect)
+        screen.blit(self.image, self.rect)
 
 '''
 Class for enemies
@@ -118,22 +128,14 @@ def gameLoop():
     enemy = Opp(100, 100, enemy_rect)
     pygame.mixer.music.play(-1)
 
-    cell_size = 15
+    cell_size = 16
     walls = []
 
-    #Added extra walls for a clean look
-    walls.extend([
-        Wall(0, 0, SCREEN_WIDTH, 10),
-        Wall(0, SCREEN_HEIGHT - 10, SCREEN_WIDTH, 10),
-        Wall(0, 0, 10, SCREEN_HEIGHT),
-        Wall(SCREEN_WIDTH - 10, 0, 10, SCREEN_HEIGHT)
-    ])
-    
-    #References the map.py file from the import
     for row_index, row in enumerate(map.map_tiles):
         for col_index, tile in enumerate(row):
-            if tile != -1 and tile != 0:
-                wall = Wall(col_index * cell_size, row_index * cell_size, cell_size, cell_size)
+            if tile in wall_images:
+                image = wall_images[tile]
+                wall = Wall(col_index * cell_size, row_index * cell_size, image)
                 walls.append(wall)
 
     while is_running:
