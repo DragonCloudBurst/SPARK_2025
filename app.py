@@ -90,7 +90,7 @@ class Opp():
 
                 collision = False
                 for wall in walls:
-                    if new_rect.rect.colliderect(wall.rect):
+                    if new_rect.colliderect(wall.rect):
                         collision = True
                         break
 
