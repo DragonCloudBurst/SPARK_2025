@@ -50,18 +50,35 @@ class Wall():
 Class for enemies
 '''
 class Opp():
-    def __init__(self, x, y, rect, image):
+    def __init__(self, x, y, rect, image, player):
         self.x = x
         self.y = y
         self.image = image
         self.rect = self.image.get_rect()
+        self.player = player
         self.rect.x = x
         self.rect.y = y
         self.width = self.image.get_width()
         self.height = self.image.get_height()
+        self.dx = 0
+        self.dy = 0
+
+    # referenced from here: https://stackoverflow.com/questions/20044791/how-to-make-an-enemy-follow-the-player-in-pygame
+    def move_towards_player(self, player):
+        dirvect = pygame.math.Vector2(player.rect.x - self.rect.x,
+                                      player.rect.y - self.rect.y)
+        dirvect.normalize()
+        dirvect.scale_to_length(5)
+        self.rect.x += self.dx * 5
+        self.rect.y += self.dy * 5
+
 
     def update(self):
         screen.blit(self.image, self.rect)
+        self.move_towards_player(self.player)
+
+        
+        
 
 '''
 Class for collectable pills
@@ -166,9 +183,9 @@ def gameLoop():
     clock.tick(FPS)
 
     player = Player(550, 30, player_rect)
-    enemy1 = Opp(100, 120, enemy_rect, pygame.image.load('images/germs/germ_1.png'))
-    enemy2 = Opp(400, 150, enemy_rect, pygame.image.load('images/germs/germ_2.png'))
-    enemy3 = Opp(25, 300, enemy_rect, pygame.image.load('images/germs/germ_3.png'))
+    enemy1 = Opp(100, 120, enemy_rect, pygame.image.load('images/germs/germ_1.png'), player)
+    enemy2 = Opp(400, 150, enemy_rect, pygame.image.load('images/germs/germ_2.png'), player)
+    enemy3 = Opp(25, 300, enemy_rect, pygame.image.load('images/germs/germ_3.png'), player)
     perc = Pills(100, 100, perc_rect)
     pygame.mixer.music.play(-1)
 
