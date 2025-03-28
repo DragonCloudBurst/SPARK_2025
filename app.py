@@ -32,7 +32,7 @@ class Opp():
     def __init__(self, x, y, rect):
         self.x = x
         self.y = y 
-        self.image = pygame.image.load('images/placeholder-player.png')
+        self.image = pygame.image.load('images/germs/germ_1.png')
         self.rect = self.image.get_rect()
         self.rect.x = x 
         self.rect.y = y
@@ -49,7 +49,7 @@ class Player():
     def __init__(self, x, y, rect):
         self.x = x
         self.y = y 
-        self.image = pygame.image.load('images/placeholder-player.png')
+        self.image = pygame.image.load('images/player_doctor.png')
         self.rect = self.image.get_rect()
         self.rect.x = x 
         self.rect.y = y
